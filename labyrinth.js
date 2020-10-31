@@ -2,6 +2,13 @@
 const gridHeight = 10;
 const gridWidth = 10;
 
+// Drawy Canva
+const canv = document.getElementById('draw');
+const context = canv.getContext('2d');
+const gridSize = 50;
+canv.height = gridSize * gridHeight;
+canv.width = gridSize * gridWidth;
+
 let start = {
   x: Math.round(Math.random() * (gridWidth - 1)),
   y: Math.round(Math.random() * (gridWidth - 1)),
@@ -21,27 +28,20 @@ function initGrid(grid) {
   }
   grid[start.x][start.y] = 1;
   grid[end.x][end.y] = 1;
+
+  // Background
+  context.fillStyle = 'lime';
+  context.fillRect(0, 0, canv.width, canv.height);
+
+  // Start
+  context.fillStyle = 'red';
+  drawRect(start);
+
+  // End
+  context.fillStyle = 'blue';
+  drawRect(end);
 }
 initGrid(grid);
-
-// Drawy Canva
-const canv = document.getElementById('draw');
-const context = canv.getContext('2d');
-const gridSize = 50;
-canv.height = gridSize * gridHeight;
-canv.width = gridSize * gridWidth;
-
-// Background
-context.fillStyle = 'lime';
-context.fillRect(0, 0, canv.width, canv.height);
-
-// Start
-context.fillStyle = 'red';
-drawRect(start);
-
-// End
-context.fillStyle = 'blue';
-drawRect(end);
 
 // 0 <= i <= 4
 // 0 <= j <= 4
@@ -51,16 +51,16 @@ console.log({ start, end });
 const button = document.getElementById('start');
 button.addEventListener('click', () => {
   initGrid(grid);
-  bfs(start, end).then((path) => {
+  bfs(start, end).then(async (path) => {
     context.fillStyle = 'black';
-    path.forEach(async (point) => {
+    for (const point of path) {
       await new Promise((res, rej) => {
         setTimeout(() => {
           res();
         }, 200);
       });
       drawRect(point);
-    });
+    }
   });
   console.log(path);
 });
